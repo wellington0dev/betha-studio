@@ -19,7 +19,7 @@ export const SERVICES: Service[] = [
     icon: 'fas fa-mobile-alt',
     color: 'text-betha-yellow'
   },
-  {
+ /*  {
     title: 'E-commerce',
     description: 'Lojas virtuais completas com integrações de pagamento e gestão de pedidos.',
     icon: 'fas fa-shopping-cart',
@@ -36,5 +36,5 @@ export const SERVICES: Service[] = [
     description: 'Análise e otimização de sistemas existentes com foco em performance e escalabilidade.',
     icon: 'fas fa-rocket',
     color: 'text-betha-yellow'
-  }
+  } */
 ];

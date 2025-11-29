@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-projects',
-  imports:[
+  imports: [
     CommonModule
   ],
   templateUrl: './projects.html',
@@ -16,8 +16,7 @@ export class Projects {
   projects: Project[] = PROJECTS;
 
   openProject(project: Project): void {
-    // Aqui você pode implementar a lógica para abrir o projeto
-    // Por exemplo: navegar para detalhes, abrir modal, etc.
+    window.open(project.link, '_blank', 'noopener,noreferrer');
     console.log('Projeto clicado:', project);
   }
 

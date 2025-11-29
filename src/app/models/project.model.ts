@@ -3,4 +3,5 @@ export interface Project {
   category: string;
   image: string;
   color: string;
+  link:string;
 }
