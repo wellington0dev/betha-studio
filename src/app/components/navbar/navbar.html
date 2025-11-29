@@ -1,0 +1,47 @@
+<!-- src/app/components/navbar/navbar.component.html -->
+<nav [class]="'navbar ' + (scrolled ? 'scrolled' : '')">
+  <div class="container">
+    <div class="navbar-content">
+      
+      <!-- Logo -->
+      <div class="logo">
+        <a (click)="scrollTo('home')" class="logo-link">
+          <span class="logo-part pink">Be</span>
+          <span class="logo-part green">tha</span>
+          <span class="logo-part yellow">.</span>
+        </a>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="desktop-menu">
+        <a 
+          *ngFor="let link of navLinks"
+          (click)="scrollTo(link.href)"
+          class="nav-link">
+          {{ link.name }}
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="mobile-menu-button">
+        <button 
+          (click)="toggleMenu()"
+          class="menu-button">
+          <i [class]="isOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Dropdown -->
+  <div *ngIf="isOpen" class="mobile-menu">
+    <div class="mobile-menu-content">
+      <a 
+        *ngFor="let link of navLinks"
+        (click)="scrollTo(link.href)"
+        class="mobile-nav-link">
+        {{ link.name }}
+      </a>
+    </div>
+  </div>
+</nav>

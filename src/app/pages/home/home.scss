@@ -1,0 +1,25 @@
+// src/app/app.component.scss
+.app-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #111827;
+  
+  // Selection styles (equivalente ao selection: do Tailwind)
+  *::selection {
+    background: var(--betha-pink);
+    color: white;
+  }
+  
+  // Scroll behavior suave
+  scroll-behavior: smooth;
+}
+
+// CSS Variables globais
+:root {
+  --betha-pink: #ec4899;
+  --betha-green: #10b981;
+  --betha-yellow: #f59e0b;
+  --betha-dark: #111827;
+  --betha-bg: #f8fafc;
+}

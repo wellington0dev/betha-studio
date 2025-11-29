@@ -1,0 +1,48 @@
+<!-- src/app/components/hero/hero.component.html -->
+<section id="home" class="hero">
+  
+  <!-- Abstract Shapes Background -->
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <div class="shape shape-3"></div>
+
+  <div class="container">
+    <div class="logo-section">
+      <h1 class="logo">
+        <span class="logo-part pink">Be</span>
+        <span class="logo-part green">tha</span>
+        <span class="logo-part yellow">.</span>
+      </h1>
+      <div class="dots-animation">
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+      </div>
+    </div>
+
+    <h2 class="title">
+      Transformamos ideias complexas em <br class="hidden md:block" />
+      <span class="highlight">
+        experiências digitais
+        <span class="highlight-underline"></span>
+      </span> incríveis.
+    </h2>
+
+    <p class="description">
+      Somos um estúdio de desenvolvimento criativo focado em design único e código de alta performance.
+    </p>
+
+    <div class="buttons-container">
+      <button 
+        (click)="scrollTo('projects')" 
+        class="btn btn-primary">
+        Ver Projetos <i class="fas fa-arrow-right"></i>
+      </button>
+      <button 
+        (click)="scrollTo('contact')" 
+        class="btn btn-secondary">
+        Falar com a gente
+      </button>
+    </div>
+  </div>
+</section>

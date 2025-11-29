@@ -1,0 +1,32 @@
+<!-- src/app/components/services/services.component.html -->
+<section id="services" class="services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-subtitle">O que fazemos</h2>
+      <h3 class="section-title">Nossas Especialidades</h3>
+    </div>
+
+    <div class="services-grid">
+      <div 
+        *ngFor="let service of services; let i = index"
+        class="service-card">
+        
+        <!-- Hover decorative background -->
+        <div 
+          [class]="'service-decoration ' + getBackgroundColor(service.color)">
+        </div>
+
+        <div class="service-icon-container">
+          <div [class]="'service-icon ' + service.color">
+            <i [class]="service.icon"></i>
+          </div>
+        </div>
+
+        <h4 class="service-title">{{ service.title }}</h4>
+        <p class="service-description">
+          {{ service.description }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

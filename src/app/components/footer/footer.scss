@@ -1,0 +1,53 @@
+// src/app/components/footer/footer.component.scss
+.footer {
+  background: var(--betha-bg);
+  padding: 2rem 0;
+  border-top: 1px solid #e5e7eb;
+
+  .container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+    text-align: center;
+
+    @media (min-width: 640px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 0 2rem;
+    }
+  }
+
+  .copyright {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .dots-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+
+    &.pink {
+      background-color: var(--betha-pink);
+    }
+
+    &.green {
+      background-color: var(--betha-green);
+    }
+
+    &.yellow {
+      background-color: var(--betha-yellow);
+    }
+  }
+}

@@ -1,0 +1,66 @@
+<!-- src/app/components/about/about.component.html -->
+<section id="about" class="about-section">
+    <!-- Decorative dots -->
+    <div class="decorative-dots">
+        <svg width="100" height="100" fill="currentColor">
+            <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="2"></circle>
+            </pattern>
+            <rect width="100" height="100" fill="url(#dots)"></rect>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="text-center mb-16">
+            <h2 class="section-subtitle">Quem Somos</h2>
+            <h3 class="section-title">Conheça o Time Betha</h3>
+            <p class="section-description">
+                A união perfeita entre a lógica robusta e o design encantador. Somos um duo apaixonado por criar soluções digitais.
+            </p>
+        </div>
+
+        <div class="team-grid">
+            <div *ngFor="let member of teamMembers" class="team-member">
+                <div class="member-image-container">
+                    <div [class]="'image-glow ' + (member.color === 'betha-green' ? 'bg-betha-green' : 'bg-betha-pink')"></div>
+                    <img 
+                        [src]="member.image" 
+                        [alt]="member.name" 
+                        class="member-image"
+                    />
+                    <div [class]="'member-initial ' + (member.color === 'betha-green' ? 'bg-betha-green' : 'bg-betha-pink')">
+                        <span class="initial-text">{{ member.name[0] }}</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="member-name">{{ member.name }}</h3>
+                    <p [class]="'member-role ' + (member.color === 'betha-green' ? 'text-betha-green' : 'text-betha-pink')">
+                        {{ member.role }}
+                    </p>
+                    <p class="member-description">
+                        {{ member.description }}
+                    </p>
+                    
+                    <div class="skills-container">
+                        <span *ngFor="let skill of member.skills" class="skill-tag">
+                            {{ skill }}
+                        </span>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

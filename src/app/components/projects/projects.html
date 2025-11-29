@@ -1,0 +1,48 @@
+<!-- src/app/components/projects/projects.component.html -->
+<section id="projects" class="projects-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-content">
+        <h2 class="section-subtitle">Portfólio</h2>
+        <h3 class="section-title">Projetos Recentes</h3>
+      </div>
+      <a 
+        (click)="openDribbble()" 
+        class="dribbble-link desktop-only">
+        Ver tudo no Dribbble <i class="fas fa-arrow-up-right"></i>
+      </a>
+    </div>
+
+    <div class="projects-grid">
+      <div 
+        *ngFor="let project of projects; let i = index"
+        (click)="openProject(project)"
+        class="project-card">
+        <div class="image-container">
+          <img 
+            [src]="project.image" 
+            [alt]="project.title" 
+            class="project-image"
+          />
+        </div>
+        <div class="project-overlay">
+          <span [class]="'project-category ' + project.color">
+            {{ project.category }}
+          </span>
+          <h4 class="project-title">
+            {{ project.title }}
+            <i class="fas fa-arrow-up-right overlay-arrow"></i>
+          </h4>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mobile-dribbble">
+      <a 
+        (click)="openDribbble()" 
+        class="dribbble-link">
+        Ver tudo no Dribbble <i class="fas fa-arrow-up-right"></i>
+      </a>
+    </div>
+  </div>
+</section>

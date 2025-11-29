@@ -1,0 +1,100 @@
+<!-- src/app/components/contact/contact.component.html -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    
+    <div class="contact-card">
+      <div class="grid-container">
+        
+        <!-- Info Side -->
+        <div class="info-side">
+          <div class="info-content">
+            <h3 class="info-title">Vamos conversar?</h3>
+            <p class="info-description">
+              Tem uma ideia incrível? Quer renovar sua marca ou criar um sistema complexo? A Betha está pronta.
+            </p>
+          </div>
+
+          <div class="contact-info">
+            <div class="contact-item">
+              <div class="contact-icon email">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <span class="contact-text">ola@bethastudio.com</span>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon phone">
+                <i class="fas fa-phone"></i>
+              </div>
+              <span class="contact-text">+55 11 99999-9999</span>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon location">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <span class="contact-text">São Paulo, SP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="form-side">
+          <!-- Removido #contactForm="ngForm" já que não estamos usando no método -->
+          <form class="contact-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input 
+                  type="text" 
+                  class="form-input"
+                  placeholder="Seu nome"
+                  name="name"
+                  ngModel
+                  required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input 
+                  type="email" 
+                  class="form-input"
+                  placeholder="seu@email.com"
+                  name="email"
+                  ngModel
+                  required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Assunto</label>
+              <select 
+                class="form-select"
+                name="subject"
+                ngModel
+                required>
+                <option value="site-budget">Orçamento de Site</option>
+                <option value="ui-ux">Design UI/UX</option>
+                <option value="app-dev">Desenvolvimento de App</option>
+                <option value="other">Outro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mensagem</label>
+              <textarea 
+                rows="4" 
+                class="form-textarea"
+                placeholder="Conte mais sobre seu projeto..."
+                name="message"
+                ngModel
+                required></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">
+              Enviar Mensagem <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
