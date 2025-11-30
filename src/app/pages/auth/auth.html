@@ -1,0 +1,179 @@
+<div class="min-h-screen bg-gradient-to-br from-betha-pink/10 via-betha-bg to-betha-green/10 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-gray-100">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-betha-pink to-betha-green p-8 text-center">
+      <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6 inline-block">
+        <i class="fas fa-palette text-white text-4xl mb-3"></i>
+        <h1 class="text-3xl font-bold text-white font-sans">Betha Studio</h1>
+        <p class="text-white/90 mt-2 font-light">
+          {{ isLoginMode() ? 'Bem-vindo de volta' : 'Crie sua conta' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 bg-gray-50/50">
+      <button 
+        class="flex-1 py-4 px-6 text-center font-semibold transition-all duration-300"
+        [class]="isLoginMode() 
+          ? 'text-betha-pink border-b-2 border-betha-pink bg-white' 
+          : 'text-gray-500 hover:text-gray-700'"
+        (click)="switchToLogin()">
+        <i class="fas fa-sign-in-alt mr-2"></i>
+        Login
+      </button>
+      <button 
+        class="flex-1 py-4 px-6 text-center font-semibold transition-all duration-300"
+        [class]="!isLoginMode() 
+          ? 'text-betha-green border-b-2 border-betha-green bg-white' 
+          : 'text-gray-500 hover:text-gray-700'"
+        (click)="switchToRegister()">
+        <i class="fas fa-user-plus mr-2"></i>
+        Cadastro
+      </button>
+    </div>
+
+    <!-- Verification Message -->
+    <div *ngIf="showVerificationMessage()" class="p-8 text-center">
+      <div class="w-16 h-16 bg-betha-green rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-envelope text-white text-2xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-3">Verifique seu email</h3>
+      <p class="text-gray-600 mb-4">
+        Enviamos um link de verificação para 
+        <strong class="text-betha-dark">{{ authForm.get('email')?.value }}</strong>
+      </p>
+      <p class="text-gray-500 text-sm mb-6">
+        Clique no link para ativar sua conta e começar a usar o Betha Studio.
+      </p>
+      <div class="space-y-3">
+        <button 
+          (click)="resendVerification()"
+          class="w-full bg-betha-green hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition duration-300">
+          <i class="fas fa-redo mr-2"></i>
+          Reenviar verificação
+        </button>
+        <button 
+          (click)="switchToLogin()"
+          class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-xl transition duration-300">
+          <i class="fas fa-arrow-left mr-2"></i>
+          Voltar para login
+        </button>
+      </div>
+    </div>
+
+    <!-- Auth Form -->
+    <form 
+      *ngIf="!showVerificationMessage()"
+      [formGroup]="authForm" 
+      (ngSubmit)="onSubmit()" 
+      class="p-8 space-y-6">
+      
+      <!-- Name Field (Register only) -->
+      <div *ngIf="!isLoginMode()" class="space-y-2">
+        <label for="name" class="block text-sm font-semibold text-gray-700">
+          <i class="fas fa-user mr-2 text-betha-pink"></i>
+          Nome completo
+        </label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Digite seu nome completo"
+          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-betha-pink transition duration-300"
+          [class]="showError('name') ? 'border-red-500' : ''">
+        <div *ngIf="showError('name')" class="text-red-500 text-sm flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          Nome é obrigatório
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="space-y-2">
+        <label for="email" class="block text-sm font-semibold text-gray-700">
+          <i class="fas fa-envelope mr-2 text-betha-pink"></i>
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-betha-pink transition duration-300"
+          [class]="showError('email') ? 'border-red-500' : ''">
+        <div *ngIf="showError('email')" class="text-red-500 text-sm flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          {{ authForm.get('email')?.errors?.['required'] ? 'Email é obrigatório' : 'Email inválido' }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="space-y-2">
+        <label for="password" class="block text-sm font-semibold text-gray-700">
+          <i class="fas fa-lock mr-2 text-betha-pink"></i>
+          Senha
+        </label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Digite sua senha"
+          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-betha-pink transition duration-300"
+          [class]="showError('password') ? 'border-red-500' : ''">
+        <div *ngIf="showError('password')" class="text-red-500 text-sm flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          {{ authForm.get('password')?.errors?.['required'] ? 'Senha é obrigatória' : 'Senha deve ter pelo menos 6 caracteres' }}
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div class="flex items-center text-red-700">
+          <i class="fas fa-exclamation-triangle mr-3"></i>
+          <span class="font-medium">{{ errorMessage() }}</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit"
+        [disabled]="!isFormValid() || isLoading()"
+        class="w-full bg-gradient-to-r from-betha-pink to-betha-green hover:from-betha-pink/90 hover:to-betha-green/90 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+        
+        <div class="flex items-center justify-center">
+          <i *ngIf="!isLoading()" 
+             [class]="isLoginMode() ? 'fas fa-sign-in-alt' : 'fas fa-user-plus'" 
+             class="mr-3"></i>
+          
+          <span *ngIf="isLoading()">
+            <i class="fas fa-spinner fa-spin mr-3"></i>
+            Processando...
+          </span>
+          <span *ngIf="!isLoading()">
+            {{ isLoginMode() ? 'Entrar no Betha Studio' : 'Criar conta' }}
+          </span>
+        </div>
+      </button>
+
+      <!-- Additional Info -->
+      <div *ngIf="isLoginMode()" class="text-center pt-4 border-t border-gray-200">
+        <p class="text-gray-600 text-sm">
+          Novo no Betha Studio? 
+          <button type="button" (click)="switchToRegister()" class="text-betha-green hover:text-betha-green/80 font-semibold ml-1">
+            Crie sua conta
+          </button>
+        </p>
+      </div>
+
+      <div *ngIf="!isLoginMode()" class="text-center pt-4 border-t border-gray-200">
+        <p class="text-gray-600 text-sm">
+          Já tem uma conta?
+          <button type="button" (click)="switchToLogin()" class="text-betha-pink hover:text-betha-pink/80 font-semibold ml-1">
+            Faça login
+          </button>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

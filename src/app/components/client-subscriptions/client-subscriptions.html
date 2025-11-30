@@ -1,0 +1,164 @@
+<section id="subscriptions" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <span class="text-betha-pink">Minhas</span>
+        <span class="text-betha-green"> Assinaturas</span>
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Gerencie suas assinaturas, solicite novos serviços ou cancele quando quiser.
+      </p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading()" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-betha-pink"></div>
+    </div>
+
+    <div *ngIf="!isLoading()" class="space-y-16">
+      
+      <!-- Serviços Disponíveis -->
+      <div>
+        <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
+          <i class="fas fa-plus-circle text-betha-green mr-3"></i>
+          Solicitar Nova Assinatura
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Plano Básico -->
+          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-betha-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-star text-betha-green text-2xl"></i>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Básico</h4>
+              <p class="text-gray-600 mb-4">Recursos essenciais para pequenos negócios</p>
+              <div class="text-betha-green font-bold text-2xl mb-6">R$ 99,90/mês</div>
+              <button
+                (click)="requestSubscription('basic', 'Plano Básico')"
+                class="w-full bg-betha-green hover:bg-green-600 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
+                Solicitar Assinatura
+              </button>
+            </div>
+          </div>
+
+          <!-- Plano Profissional -->
+          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-betha-pink/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-gem text-betha-pink text-2xl"></i>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Profissional</h4>
+              <p class="text-gray-600 mb-4">Recursos avançados para empresas</p>
+              <div class="text-betha-pink font-bold text-2xl mb-6">R$ 199,90/mês</div>
+              <button
+                (click)="requestSubscription('pro', 'Plano Profissional')"
+                class="w-full bg-betha-pink hover:bg-pink-600 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
+                Solicitar Assinatura
+              </button>
+            </div>
+          </div>
+
+          <!-- Plano Enterprise -->
+          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
+            <div class="text-center">
+              <div class="w-20 h-20 bg-betha-yellow/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-crown text-betha-yellow text-2xl"></i>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Enterprise</h4>
+              <p class="text-gray-600 mb-4">Solução completa para grandes empresas</p>
+              <div class="text-betha-yellow font-bold text-2xl mb-6">R$ 399,90/mês</div>
+              <button
+                (click)="requestSubscription('enterprise', 'Plano Enterprise')"
+                class="w-full bg-betha-yellow hover:bg-yellow-500 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
+                Solicitar Assinatura
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assinaturas Ativas -->
+      <div>
+        <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
+          <i class="fas fa-check-circle text-betha-green mr-3"></i>
+          Assinaturas Ativas
+        </h3>
+
+        <div *ngIf="subscriptions().length === 0" class="text-center py-12 bg-gray-50 rounded-2xl">
+          <i class="fas fa-credit-card text-4xl text-gray-400 mb-4"></i>
+          <p class="text-gray-500 text-lg">Nenhuma assinatura ativa</p>
+          <p class="text-gray-400">Solicite sua primeira assinatura acima</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" *ngIf="subscriptions().length > 0">
+          <div *ngFor="let sub of subscriptions()" 
+               class="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-900">{{ sub.service }}</h4>
+                <p class="text-gray-600">Código: {{ sub.serviceCod }}</p>
+              </div>
+              <span [class]="sub.status === 'active' 
+                ? 'bg-betha-green/10 text-betha-green' 
+                : 'bg-betha-pink/10 text-betha-pink'
+                " class="px-3 py-1 rounded-full text-sm font-semibold">
+                {{ sub.status === 'active' ? 'Ativa' : 'Suspensa' }}
+              </span>
+            </div>
+            
+            <div class="space-y-2 text-sm text-gray-600">
+              <p><strong>Data de início:</strong> {{ formatDate(sub.createdAt) }}</p>
+              <p><strong>Próxima cobrança:</strong> {{ formatDate(sub.nextCharge) }}</p>
+              <p><strong>Pagamento:</strong> 
+                <span [class]="sub.paid ? 'text-betha-green' : 'text-betha-pink'">
+                  {{ sub.paid ? 'Confirmado' : 'Pendente' }}
+                </span>
+              </p>
+            </div>
+            
+            <button
+              (click)="requestCancellation(sub.serviceCod)"
+              class="w-full mt-4 bg-betha-pink hover:bg-pink-600 text-white py-2 px-4 rounded-xl font-semibold transition duration-300">
+              <i class="fas fa-times mr-2"></i>
+              Solicitar Cancelamento
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitações Pendentes -->
+      <div>
+        <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
+          <i class="fas fa-clock text-betha-yellow mr-3"></i>
+          Solicitações Pendentes
+        </h3>
+
+        <div *ngIf="pendingRequests().length === 0" class="text-center py-12 bg-gray-50 rounded-2xl">
+          <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+          <p class="text-gray-500 text-lg">Nenhuma solicitação pendente</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" *ngIf="pendingRequests().length > 0">
+          <div *ngFor="let request of pendingRequests()" 
+               class="bg-yellow-50 border border-betha-yellow/30 rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-lg font-bold text-gray-900">{{ request.service }}</h4>
+              <i class="fas fa-clock text-betha-yellow text-xl"></i>
+            </div>
+            
+            <div class="space-y-2 text-sm text-gray-600">
+              <p><strong>Solicitado em:</strong> {{ formatDate(request.createdAt) }}</p>
+              <p><strong>Status:</strong> 
+                <span class="text-betha-yellow font-semibold">
+                  {{ request.status === 'pending' ? 'Em análise' : request.status }}
+                </span>
+              </p>
+              <p><strong>Código do serviço:</strong> {{ request.serviceCod }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
