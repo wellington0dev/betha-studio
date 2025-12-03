@@ -1,6 +1,8 @@
 export interface Service {
-  title: string;
-  description: string;
-  icon: string;
-  color: string;
+    id:string;
+    name:string;
+    price:number;
+    description:string;
+    createdAt:string;
+    updatedAt:string;
 }

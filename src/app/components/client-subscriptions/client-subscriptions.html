@@ -11,70 +11,74 @@
     </div>
 
     <!-- Loading -->
-    <div *ngIf="isLoading()" class="flex justify-center items-center py-12">
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-betha-pink"></div>
     </div>
 
-    <div *ngIf="!isLoading()" class="space-y-16">
+    <div *ngIf="!isLoading" class="space-y-16">
       
       <!-- Serviços Disponíveis -->
-      <div>
+      <div *ngIf="services.length > 0">
         <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
           <i class="fas fa-plus-circle text-betha-green mr-3"></i>
-          Solicitar Nova Assinatura
+          Serviços Disponíveis
         </h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Plano Básico -->
-          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
+          <!-- Card de Serviço Dinâmico -->
+          <div *ngFor="let service of services" 
+               class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300 hover:-translate-y-1">
             <div class="text-center">
+              <!-- Ícone do Serviço -->
               <div class="w-20 h-20 bg-betha-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-star text-betha-green text-2xl"></i>
+                <i class="fas fa-cube text-betha-green text-2xl"></i>
               </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Básico</h4>
-              <p class="text-gray-600 mb-4">Recursos essenciais para pequenos negócios</p>
-              <div class="text-betha-green font-bold text-2xl mb-6">R$ 99,90/mês</div>
+              
+              <!-- Nome do Serviço -->
+              <h4 class="text-xl font-bold text-gray-900 mb-2">{{ service.name }}</h4>
+              
+              <!-- Descrição -->
+              <p class="text-gray-600 mb-4 text-sm min-h-[60px]">{{ service.description }}</p>
+              
+              <!-- Preço -->
+              <div class="text-betha-green font-bold text-2xl mb-2">
+                R$ {{ service.price.toFixed(2).replace('.', ',') }}
+              </div>
+              
+              <!-- Status -->
+              <div class="mb-6">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  Disponível
+                </span>
+              </div>
+              
+              <!-- Botão de Solicitação -->
               <button
-                (click)="requestSubscription('basic', 'Plano Básico')"
-                class="w-full bg-betha-green hover:bg-green-600 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
+                (click)="requestSubscription(service.id, service.name)"
+                class="w-full bg-betha-green hover:bg-green-600 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-[1.02]">
+                <i class="fas fa-paper-plane mr-2"></i>
                 Solicitar Assinatura
               </button>
+              
+              <!-- Informações Adicionais -->
+              <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                <div class="flex justify-between">
+                  <span>Criado em:</span>
+                  <span>{{ formatDate(service.createdAt) }}</span>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Plano Profissional -->
-          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
-            <div class="text-center">
-              <div class="w-20 h-20 bg-betha-pink/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-gem text-betha-pink text-2xl"></i>
-              </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Profissional</h4>
-              <p class="text-gray-600 mb-4">Recursos avançados para empresas</p>
-              <div class="text-betha-pink font-bold text-2xl mb-6">R$ 199,90/mês</div>
-              <button
-                (click)="requestSubscription('pro', 'Plano Profissional')"
-                class="w-full bg-betha-pink hover:bg-pink-600 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
-                Solicitar Assinatura
-              </button>
-            </div>
-          </div>
-
-          <!-- Plano Enterprise -->
-          <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
-            <div class="text-center">
-              <div class="w-20 h-20 bg-betha-yellow/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-crown text-betha-yellow text-2xl"></i>
-              </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-2">Plano Enterprise</h4>
-              <p class="text-gray-600 mb-4">Solução completa para grandes empresas</p>
-              <div class="text-betha-yellow font-bold text-2xl mb-6">R$ 399,90/mês</div>
-              <button
-                (click)="requestSubscription('enterprise', 'Plano Enterprise')"
-                class="w-full bg-betha-yellow hover:bg-yellow-500 text-white py-3 px-6 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
-                Solicitar Assinatura
-              </button>
-            </div>
-          </div>
+      <!-- Mensagem se não houver serviços -->
+      <div *ngIf="services.length === 0 && !isLoading" class="text-center py-12">
+        <div class="max-w-md mx-auto">
+          <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">Nenhum serviço disponível</h3>
+          <p class="text-gray-500">No momento não há serviços para assinatura.</p>
         </div>
       </div>
 
@@ -82,80 +86,122 @@
       <div>
         <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
           <i class="fas fa-check-circle text-betha-green mr-3"></i>
-          Assinaturas Ativas
+          Minhas Assinaturas Ativas
         </h3>
 
-        <div *ngIf="subscriptions().length === 0" class="text-center py-12 bg-gray-50 rounded-2xl">
+        <div *ngIf="subscriptions.length === 0" class="text-center py-12 bg-gray-50 rounded-2xl">
           <i class="fas fa-credit-card text-4xl text-gray-400 mb-4"></i>
           <p class="text-gray-500 text-lg">Nenhuma assinatura ativa</p>
           <p class="text-gray-400">Solicite sua primeira assinatura acima</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" *ngIf="subscriptions().length > 0">
-          <div *ngFor="let sub of subscriptions()" 
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" *ngIf="subscriptions.length > 0">
+          <div *ngFor="let sub of subscriptions" 
                class="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition duration-300">
             <div class="flex justify-between items-start mb-4">
               <div>
-                <h4 class="text-lg font-bold text-gray-900">{{ sub.service }}</h4>
-                <p class="text-gray-600">Código: {{ sub.serviceCod }}</p>
+                <h4 class="text-lg font-bold text-gray-900">{{ getServiceName(sub.serviceId) }}</h4>
+                <p class="text-gray-600 text-sm">ID: {{ sub.id.slice(0, 8) }}...</p>
               </div>
-              <span [class]="sub.status === 'active' 
-                ? 'bg-betha-green/10 text-betha-green' 
-                : 'bg-betha-pink/10 text-betha-pink'
-                " class="px-3 py-1 rounded-full text-sm font-semibold">
-                {{ sub.status === 'active' ? 'Ativa' : 'Suspensa' }}
+              <span [ngClass]="{
+                'bg-green-100 text-green-800': sub.status === 'active',
+                'bg-yellow-100 text-yellow-800': sub.status === 'pending',
+                'bg-red-100 text-red-800': sub.status === 'inactive'
+              }" class="px-3 py-1 rounded-full text-sm font-semibold">
+                {{ sub.status === 'active' ? 'Ativa' : 
+                   sub.status === 'pending' ? 'Pendente' : 
+                   'Inativa' }}
               </span>
             </div>
             
-            <div class="space-y-2 text-sm text-gray-600">
-              <p><strong>Data de início:</strong> {{ formatDate(sub.createdAt) }}</p>
-              <p><strong>Próxima cobrança:</strong> {{ formatDate(sub.nextCharge) }}</p>
-              <p><strong>Pagamento:</strong> 
-                <span [class]="sub.paid ? 'text-betha-green' : 'text-betha-pink'">
+            <div class="space-y-3 text-sm text-gray-600 mb-4">
+              <div class="flex justify-between">
+                <span class="font-medium">Data de início:</span>
+                <span>{{ formatDate(sub.createdAt) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">Próxima cobrança:</span>
+                <span>{{ formatDate(sub.nextCharge) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">Pagamento:</span>
+                <span [ngClass]="{
+                  'text-green-600 font-semibold': sub.paid,
+                  'text-yellow-600 font-semibold': !sub.paid
+                }">
                   {{ sub.paid ? 'Confirmado' : 'Pendente' }}
                 </span>
-              </p>
+              </div>
             </div>
             
-            <button
-              (click)="requestCancellation(sub.serviceCod)"
-              class="w-full mt-4 bg-betha-pink hover:bg-pink-600 text-white py-2 px-4 rounded-xl font-semibold transition duration-300">
-              <i class="fas fa-times mr-2"></i>
-              Solicitar Cancelamento
-            </button>
+            <!-- Botões de Ação -->
+            <div class="flex space-x-2">
+              <button *ngIf="sub.status === 'active'"
+                class="flex-1 bg-betha-pink hover:bg-pink-600 text-white py-2 px-4 rounded-lg font-medium transition duration-300 text-sm">
+                <i class="fas fa-times mr-2"></i>
+                Cancelar
+              </button>
+              <button
+                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition duration-300 text-sm">
+                <i class="fas fa-info-circle mr-2"></i>
+                Detalhes
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Solicitações Pendentes -->
-      <div>
+      <div *ngIf="pendingRequests.length > 0">
         <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
           <i class="fas fa-clock text-betha-yellow mr-3"></i>
           Solicitações Pendentes
         </h3>
 
-        <div *ngIf="pendingRequests().length === 0" class="text-center py-12 bg-gray-50 rounded-2xl">
-          <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
-          <p class="text-gray-500 text-lg">Nenhuma solicitação pendente</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" *ngIf="pendingRequests().length > 0">
-          <div *ngFor="let request of pendingRequests()" 
-               class="bg-yellow-50 border border-betha-yellow/30 rounded-2xl p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div *ngFor="let request of pendingRequests" 
+               [ngClass]="{
+                 'bg-yellow-50 border-yellow-200': request.status === 'pending',
+                 'bg-green-50 border-green-200': request.status === 'approved',
+                 'bg-red-50 border-red-200': request.status === 'rejected'
+               }" class="border rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">
-              <h4 class="text-lg font-bold text-gray-900">{{ request.service }}</h4>
-              <i class="fas fa-clock text-betha-yellow text-xl"></i>
+              <div>
+                <h4 class="text-lg font-bold text-gray-900">{{ getServiceName(request.serviceId) }}</h4>
+                <p class="text-gray-600 text-sm">Solicitado em: {{ formatDate(request.createdAt) }}</p>
+              </div>
+              <i [ngClass]="{
+                'fas fa-clock text-yellow-500': request.status === 'pending',
+                'fas fa-check-circle text-green-500': request.status === 'approved',
+                'fas fa-times-circle text-red-500': request.status === 'rejected'
+              }" class="text-2xl"></i>
             </div>
             
-            <div class="space-y-2 text-sm text-gray-600">
-              <p><strong>Solicitado em:</strong> {{ formatDate(request.createdAt) }}</p>
-              <p><strong>Status:</strong> 
-                <span class="text-betha-yellow font-semibold">
-                  {{ request.status === 'pending' ? 'Em análise' : request.status }}
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex justify-between">
+                <span class="font-medium">Status:</span>
+                <span [ngClass]="{
+                  'text-yellow-600 font-semibold': request.status === 'pending',
+                  'text-green-600 font-semibold': request.status === 'approved',
+                  'text-red-600 font-semibold': request.status === 'rejected'
+                }">
+                  {{ request.status === 'pending' ? 'Em análise' : 
+                     request.status === 'approved' ? 'Aprovado' : 
+                     'Rejeitado' }}
                 </span>
-              </p>
-              <p><strong>Código do serviço:</strong> {{ request.serviceCod }}</p>
+              </div>
+              
+              <div *ngIf="request.updatedAt && request.updatedAt !== request.createdAt" class="flex justify-between">
+                <span class="font-medium">Atualizado em:</span>
+                <span>{{ formatDate(request.updatedAt) }}</span>
+              </div>
+              
+              <div *ngIf="request.notes" class="mt-2 pt-2 border-t border-gray-200">
+                <span class="font-medium">Observações:</span>
+                <p class="text-gray-500 mt-1">{{ request.notes }}</p>
+              </div>
             </div>
+            
           </div>
         </div>
       </div>

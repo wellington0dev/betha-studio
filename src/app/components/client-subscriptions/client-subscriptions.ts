@@ -1,7 +1,8 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SubscriptionService, Subscription, SubscriptionRequest } from '../../services/subscription.service';
+import { SubscriptionService, Subscription, RequestSub } from '../../services/subscription.service';
 import { Subscription as RxSubscription } from 'rxjs';
+import { Service } from '../../models/service.model';
 
 @Component({
   selector: 'app-client-subscriptions',
@@ -11,73 +12,97 @@ import { Subscription as RxSubscription } from 'rxjs';
   styleUrl: './client-subscriptions.scss',
 })
 export class ClientSubscriptions implements OnInit, OnDestroy {
-  subscriptions = signal<Subscription[]>([]);
-  pendingRequests = signal<SubscriptionRequest[]>([]);
-  isLoading = signal(false);
+  subscriptions: Subscription[] = [];
+  pendingRequests: RequestSub[] = [];
+  isLoading = true; // Inicia como true
+  services: Service[] = [];
 
-  private subscriptionsSubscription?: RxSubscription;
+  private dataSubscription?: RxSubscription;
 
-  constructor(private subscriptionService: SubscriptionService) {}
+  constructor(
+    private subscriptionService: SubscriptionService,
+    private cdr: ChangeDetectorRef // Adiciona isso
+  ) { }
 
-  async ngOnInit() {
-    await this.loadData();
-    this.setupRealTimeListeners();
+  ngOnInit() {
+    this.loadData();
   }
 
   ngOnDestroy() {
-    this.subscriptionsSubscription?.unsubscribe();
+    this.dataSubscription?.unsubscribe();
   }
 
-  private async loadData() {
-    this.isLoading.set(true);
-    try {
-      const [subscriptions, requests] = await Promise.all([
-        this.subscriptionService.getActiveSubscriptions(),
-        this.subscriptionService.getPendingRequests()
-      ]);
-
-      this.subscriptions.set(subscriptions);
-      this.pendingRequests.set(requests);
-    } catch (error) {
-      console.error('Erro ao carregar assinaturas:', error);
-    } finally {
-      this.isLoading.set(false);
+  private loadData() {
+    this.isLoading = true;
+    
+    // Limpa subscription anterior se existir
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
     }
-  }
 
-  private setupRealTimeListeners() {
-    this.subscriptionsSubscription = this.subscriptionService.getSubscriptionsRealTime()
-      .subscribe((data: any) => {
-        if (data) {
-          this.subscriptions.set(Object.values(data));
+    // Carrega serviços
+    const servicesSub = this.subscriptionService.getAllServices()
+      .subscribe({
+        next: (services) => {
+          this.services = services;
+          console.log('Services:', services);
+          this.isLoading = false;
+          this.cdr.detectChanges(); // Força detecção de mudanças
+        },
+        error: (err) => {
+          console.error('Erro ao carregar serviços:', err);
+          this.isLoading = false;
+          this.cdr.detectChanges(); // Força detecção de mudanças
         }
       });
+
+    // Carrega assinaturas
+    const subscriptionsSub = this.subscriptionService.getActiveSubscriptions()
+      .subscribe({
+        next: (subscriptions) => {
+          this.subscriptions = subscriptions;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar assinaturas:', error);
+        }
+      });
+
+    // Carrega solicitações
+    const requestsSub = this.subscriptionService.getPendingRequests()
+      .subscribe({
+        next: (requests) => {
+          this.pendingRequests = requests;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar solicitações:', error);
+        }
+      });
+
+    // Cria uma subscription combinada
+    this.dataSubscription = new RxSubscription();
+    this.dataSubscription.add(servicesSub);
+    this.dataSubscription.add(subscriptionsSub);
+    this.dataSubscription.add(requestsSub);
   }
 
-  async requestSubscription(serviceCod: string, serviceName: string) {
-    this.isLoading.set(true);
+  async requestSubscription(serviceId: string, serviceName: string) {
+    this.isLoading = true;
+    this.cdr.detectChanges(); // Força detecção de mudanças
+    
     try {
-      await this.subscriptionService.requestSubscription(serviceCod, serviceName);
-      await this.loadData();
+      await this.subscriptionService.requestSubscription(serviceId, serviceName);
+      this.loadData(); // Recarrega os dados
     } catch (error) {
       console.error('Erro ao solicitar assinatura:', error);
-    } finally {
-      this.isLoading.set(false);
+      this.isLoading = false;
+      this.cdr.detectChanges(); // Força detecção de mudanças
     }
   }
 
-  async requestCancellation(serviceCod: string) {
-    if (!confirm('Tem certeza que deseja cancelar esta assinatura?')) return;
-
-    this.isLoading.set(true);
-    try {
-      await this.subscriptionService.requestCancellation(serviceCod);
-      await this.loadData();
-    } catch (error) {
-      console.error('Erro ao solicitar cancelamento:', error);
-    } finally {
-      this.isLoading.set(false);
-    }
+  // Método para obter nome do serviço pelo ID
+  getServiceName(serviceId: string): string {
+    const service = this.services.find(s => s.id === serviceId);
+    return service ? service.name : `Serviço ${serviceId}`;
   }
 
   formatDate(dateString: string): string {

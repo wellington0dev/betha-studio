@@ -6,14 +6,19 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-services',
-  imports:[
+  imports: [
     CommonModule
   ],
   templateUrl: './services.html',
   styleUrls: ['./services.scss']
 })
-export class Services{
-  services: Service[] = SERVICES;
+export class Services {
+  services: {
+    title: string;
+    description: string;
+    icon: string;
+    color: string;
+  }[] = SERVICES;
 
   getBackgroundColor(colorClass: string): string {
     // Converte classe de texto para background

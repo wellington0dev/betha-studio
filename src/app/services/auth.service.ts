@@ -58,6 +58,10 @@ export class AuthService {
     return this.currentUser?.displayName || this.currentUser?.email?.split('@')[0] || 'Usuário';
   }
 
+  getUserId():string{
+    return this.currentUser?.uid || '';
+  }
+
   isEmailVerified(): boolean {
     return this.currentUser?.emailVerified || false;
   }
