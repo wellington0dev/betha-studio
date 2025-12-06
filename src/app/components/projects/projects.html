@@ -1,3 +1,4 @@
+<!-- src/app/components/projects/projects.component.html -->
 <section id="projects" class="projects-section">
   <div class="container">
     <div class="section-header">
@@ -18,7 +19,7 @@
         class="project-card">
         
         <!-- Imagem do projeto -->
-        <div class="image-container">
+        <div class="project-image-container">
           <img 
             [src]="project.image" 
             [alt]="project.title" 
@@ -26,31 +27,48 @@
           />
         </div>
 
-        <!-- Overlay com informações -->
-        <div class="project-overlay">
-          <span [class]="'project-category ' + project.color">
-            {{ project.category }}
-          </span>
-          <h4 class="project-title">
-            {{ project.title }}
-            <i class="fas fa-arrow-up-right overlay-arrow"></i>
-          </h4>
-        </div>
+        <!-- Conteúdo do card -->
+        <div class="project-content">
+          <!-- Categoria -->
+          <div class="project-category-tag">
+            <span [class]="'project-category ' + project.color">
+              {{ project.category }}
+            </span>
+          </div>
 
-        <!-- Botão no hover -->
-        <div class="project-hover-actions">
-          <button 
-            (click)="viewProject(project.id); $event.stopPropagation()"
-            class="view-project-btn">
-            Ver Detalhes
-            <i class="fas fa-arrow-right ml-2"></i>
-          </button>
-          <button 
-            (click)="openProject(project); $event.stopPropagation()"
-            class="visit-site-btn">
-            Visitar Site
-            <i class="fas fa-external-link-alt ml-2"></i>
-          </button>
+          <!-- Título -->
+          <h3 class="project-title">
+            {{ project.title }}
+          </h3>
+
+          <!-- Descrição -->
+          <!-- <p class="project-description">
+            {{ project.description }}
+          </p>
+ -->
+          <!-- Tags -->
+          <div class="project-tags">
+            <span 
+              *ngFor="let tag of project.tags" 
+              class="project-tag">
+              {{ tag }}
+            </span>
+          </div>
+
+          <!-- Ações -->
+          <div class="project-actions">
+            <button 
+              (click)="viewProject(project.id); $event.stopPropagation()"
+              class="action-btn primary-btn">
+              Ver Detalhes
+              <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+            <button 
+              (click)="openProject(project); $event.stopPropagation()"
+              class="action-btn secondary-btn">
+              <i class="fas fa-external-link-alt"></i>
+            </button>
+          </div>
         </div>
 
       </div>
