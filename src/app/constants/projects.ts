@@ -2,21 +2,27 @@ import { Project } from "../models/project.model";
 
 export const PROJECTS: Project[] = [
   {
+    id:'gespro',
     title: 'GesPro - Agendamento',
+    description:'',
     category: 'Web App',
     image: '/images/projects/gespro-agenda.png',
     color: 'bg-betha-pink',
     link:'https://gespro-agenda.vercel.app'
   },
   {
+    id:'helena',
     title: 'Helena AI',
+    description:'',
     category: 'Web App',
     image: '/images/projects/helena-ai.png',
     color: 'bg-betha-green',
     link:'https://helena-ai-zeta.vercel.app'
   },
   {
+    id:'bethany',
     title: 'Bethany',
+    description:'',
     category: 'Web App',
     image: '/images/projects/bethany-ai.png',
     color: 'bg-betha-yellow',

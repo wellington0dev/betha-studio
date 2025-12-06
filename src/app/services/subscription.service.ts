@@ -4,28 +4,28 @@ import { AuthService } from './auth.service';
 import { Observable, map, from, of } from 'rxjs';
 
 export interface RequestSub {
-  id: string;                    // requestId gerado pelo Firebase
-  userId: string;                // ID do usuário
-  serviceId: string;             // ID do serviço solicitado
-  createdAt: string;             // data de criação
-  status: 'pending' | 'approved' | 'rejected'; // status
-  updatedAt?: string;            // data de atualização
-  notes?: string;                // observações
-  subscriptionId?: string;       // ID da subscription criada (se aprovada)
+  id: string;                    
+  userId: string;                
+  serviceId: string;             
+  createdAt: string;             
+  status: 'pending' | 'approved' | 'rejected'; 
+  updatedAt?: string;            
+  notes?: string;                
+  subscriptionId?: string;       
 }
 
 export interface Subscription {
-  id: string;                    // subId gerado pelo Firebase
-  userId: string;                // ID do usuário
-  serviceId: string;             // ID do serviço
-  createdAt: string;             // data de criação
-  paid: boolean;                 // se foi pago ou não
-  nextCharge: string;            // data do próximo pagamento
-  status: 'active' | 'inactive' | 'pending'; // status
-  updatedAt?: string;            // data de atualização
-  approvedBy?: string;           // ID do admin que aprovou
-  approvedAt?: string;           // data da aprovação
-  requestId?: string;            // ID da request que originou esta subscription
+  id: string;                    
+  userId: string;                
+  serviceId: string;             
+  createdAt: string;             
+  paid: boolean;                 
+  nextCharge: string;            
+  status: 'active' | 'inactive' | 'pending'; 
+  updatedAt?: string;            
+  approvedBy?: string;           
+  approvedAt?: string;           
+  requestId?: string;            
 }
 
 export interface Service {
@@ -121,14 +121,11 @@ export class SubscriptionService {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 
-  /**
-   * Solicitar nova assinatura para um serviço
-   */
   async requestSubscription(serviceId: string, notes?: string): Promise<string> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
 
-    const requestId = this.generateRequestId();
+    const requestId = serviceId;
     const now = new Date().toISOString();
 
     const request: Omit<RequestSub, 'id'> = {
@@ -144,9 +141,6 @@ export class SubscriptionService {
     return requestId;
   }
 
-  /**
-   * Obter todas as solicitações do usuário atual
-   */
   getUserRequests(): Observable<RequestSub[]> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
@@ -155,7 +149,6 @@ export class SubscriptionService {
       map((requests: any) => {
         if (!requests) return [];
 
-        // Converter objeto para array
         return Object.keys(requests).map(id => ({
           id,
           ...requests[id]
@@ -164,9 +157,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter solicitações pendentes do usuário
-   */
   getPendingRequests(): Observable<RequestSub[]> {
     return this.getUserRequests().pipe(
       map(requests =>
@@ -175,9 +165,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter solicitação específica por ID
-   */
   getRequestById(requestId: string): Observable<RequestSub | null> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
@@ -190,22 +177,16 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Cancelar solicitação pendente
-   */
   async cancelRequest(requestId: string): Promise<void> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
 
-    // Primeiro verificar se a solicitação existe e está pendente
     const request = await from(this.db.readData(`subscriptions/${userId}/requests`, requestId)).toPromise();
     if (!request) throw new Error('Solicitação não encontrada');
     if (request.status !== 'pending') {
       throw new Error('Só é possível cancelar solicitações pendentes');
     }
 
-    // Atualizar status para cancelled (ou remover)
-    // Vamos apenas marcar como rejected para manter histórico
     const updateData = {
       ...request,
       status: 'rejected' as const,
@@ -215,11 +196,6 @@ export class SubscriptionService {
     await this.db.updateData(`subscriptions/${userId}/requests`, requestId, updateData);
   }
 
-  // ========== FUNÇÕES DE ASSINATURAS (USER) ==========
-
-  /**
-   * Obter todas as assinaturas do usuário atual
-   */
   getUserSubscriptions(): Observable<Subscription[]> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
@@ -228,7 +204,6 @@ export class SubscriptionService {
       map((subscriptions: any) => {
         if (!subscriptions) return [];
 
-        // Converter objeto para array
         return Object.keys(subscriptions).map(id => ({
           id,
           ...subscriptions[id]
@@ -237,9 +212,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter assinaturas ativas do usuário
-   */
   getActiveSubscriptions(): Observable<Subscription[]> {
     return this.getUserSubscriptions().pipe(
       map(subscriptions =>
@@ -248,9 +220,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter assinaturas pagas do usuário
-   */
   getPaidSubscriptions(): Observable<Subscription[]> {
     return this.getUserSubscriptions().pipe(
       map(subscriptions =>
@@ -259,9 +228,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter assinatura específica por ID
-   */
   getSubscriptionById(subscriptionId: string): Observable<Subscription | null> {
     const userId = this.auth.getUserId();
     if (!userId) throw new Error('Usuário não autenticado');
@@ -274,9 +240,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Verificar se usuário tem assinatura ativa para um serviço específico
-   */
   hasActiveSubscription(serviceId: string): Observable<boolean> {
     return this.getActiveSubscriptions().pipe(
       map(subscriptions =>
@@ -285,9 +248,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Verificar se pode solicitar assinatura para um serviço
-   */
   canRequestSubscription(serviceId: string): Observable<{
     canRequest: boolean;
     reason?: string;
@@ -295,7 +255,6 @@ export class SubscriptionService {
   }> {
     return this.getActiveSubscriptions().pipe(
       map(activeSubscriptions => {
-        // Verificar se já tem assinatura ativa para este serviço
         const existingSubscription = activeSubscriptions.find(
           sub => sub.serviceId === serviceId
         );
@@ -315,9 +274,6 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Obter resumo das assinaturas do usuário
-   */
   getSubscriptionSummary(): Observable<{
     total: number;
     active: number;
@@ -332,7 +288,6 @@ export class SubscriptionService {
         const paid = subscriptions.filter(s => s.paid).length;
         const pending = subscriptions.filter(s => !s.paid).length;
 
-        // Encontrar próximo pagamento mais próximo
         const upcomingPayments = subscriptions
           .filter(s => s.status === 'active' && !s.paid)
           .map(s => new Date(s.nextCharge))

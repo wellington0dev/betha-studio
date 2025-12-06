@@ -87,15 +87,15 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
 
   async requestSubscription(serviceId: string, serviceName: string) {
     this.isLoading = true;
-    this.cdr.detectChanges(); // Força detecção de mudanças
+    this.cdr.detectChanges();
     
     try {
       await this.subscriptionService.requestSubscription(serviceId, serviceName);
-      this.loadData(); // Recarrega os dados
+      this.loadData();
     } catch (error) {
       console.error('Erro ao solicitar assinatura:', error);
       this.isLoading = false;
-      this.cdr.detectChanges(); // Força detecção de mudanças
+      this.cdr.detectChanges();
     }
   }
 
