@@ -1,0 +1,274 @@
+<section id="subscriptions" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-3">
+        <span class="text-betha-pink">Minhas</span>
+        <span class="text-betha-green"> Assinaturas</span>
+      </h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Gerencie suas assinaturas em um só lugar
+      </p>
+
+      <div class="text-yellow-700 
+        bg-yellow-100 border 
+        border-yellow-400 rounded-lg p-4
+        mt-4
+      ">
+        <h2 class="font-semibold text-lg mb-1">⚠ Aviso importante</h2>
+        <p>
+          Os pagamentos podem ser realizados via PIX. Vai estar em nome de Wellington Alexandre <br>
+          Caso sua assinatura não seja aprovada após o pagamento, você pode entrar em contato com nossa equipe pelo
+          e-mail
+          <a class="font-medium underline" href="mailto:solucoesbetha@gmail.com">solucoesbetha@gmail.com</a>.
+        </p>
+        <p class="mt-2">
+          A ativação pode levar alguns minutos, pois não é automática ainda.
+          Se tiver urgência, fale conosco e aceleraremos o processo. 😉
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-8">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-betha-pink"></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="space-y-8">
+
+      <!-- Serviços Disponíveis -->
+      <div *ngIf="services.length > 0">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <i class="fas fa-plus-circle text-betha-green mr-2 text-sm"></i>
+            Serviços Disponíveis
+          </h3>
+          <span class="text-sm text-gray-500">{{ services.length }} disponíveis</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <div *ngFor="let service of services"
+            class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-betha-green/20 transition-all duration-200">
+
+            <!-- Cabeçalho do Card -->
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-betha-green/10 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-cube text-betha-green text-sm"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900 text-base">{{ service.name }}</h4>
+                  <div class="text-betha-green font-bold text-lg">
+                    R$ {{ service.price.toFixed(2).replace('.', ',') }}
+                    <span class="text-gray-500 text-xs font-normal">/mês</span>
+                  </div>
+                </div>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 font-medium">
+                Disponível
+              </span>
+            </div>
+
+            <!-- Descrição -->
+            <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ service.description }}</p>
+
+            <!-- No card de serviço, adicione um botão de detalhes: -->
+            <div class="flex space-x-2 mt-4">
+              <button (click)="viewServiceDetails(service); $event.stopPropagation()"
+                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg font-medium text-sm transition duration-200 flex items-center justify-center">
+                <i class="fas fa-info-circle mr-2 text-xs"></i>
+                Detalhes
+              </button>
+              <button (click)="requestSubscription(service.id, service.name)"
+                class="flex-1 bg-betha-green hover:bg-green-600 text-white py-2 px-3 rounded-lg font-medium text-sm transition duration-200 flex items-center justify-center">
+                <i class="fas fa-paper-plane mr-2 text-xs"></i>
+                Solicitar
+              </button>
+
+              <button (click)="copyPix(service.linkPix)"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white py-1.5 px-3 rounded-lg text-xs font-medium transition duration-200">
+                💸 Copiar link de pagamento PIX
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensagem se não houver serviços -->
+      <div *ngIf="services.length === 0 && !isLoading" class="text-center py-8 bg-gray-50 rounded-xl">
+        <i class="fas fa-box-open text-3xl text-gray-300 mb-3"></i>
+        <p class="text-gray-500 text-sm">Nenhum serviço disponível no momento</p>
+      </div>
+
+      <!-- Grid Principal: Assinaturas e Solicitações -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Assinaturas Ativas -->
+        <div class="bg-gray-50 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i class="fas fa-check-circle text-betha-green mr-2 text-sm"></i>
+              Minhas Assinaturas
+            </h3>
+            <span class="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-medium">
+              {{ subscriptions.length }} ativas
+            </span>
+          </div>
+
+          <div *ngIf="subscriptions.length === 0" class="text-center py-6">
+            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-credit-card text-gray-400"></i>
+            </div>
+            <p class="text-gray-500 text-sm mb-2">Nenhuma assinatura ativa</p>
+            <p class="text-gray-400 text-xs">Solicite um serviço acima</p>
+          </div>
+
+          <div class="space-y-3 max-h-96 overflow-y-auto pr-2" *ngIf="subscriptions.length > 0">
+            <div *ngFor="let sub of subscriptions"
+              class="bg-white rounded-lg p-4 border border-gray-200 hover:border-betha-pink/30 transition-colors">
+
+              <!-- Cabeçalho da Assinatura -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-medium text-gray-900 text-sm truncate">{{ getServiceName(sub.serviceId) }}</h4>
+                  <p class="text-xs text-gray-500">ID: {{ sub.id.slice(0, 8) }}...</p>
+                </div>
+                <span [ngClass]="{
+                  'bg-green-100 text-green-700': sub.status === 'active',
+                  'bg-yellow-100 text-yellow-700': sub.status === 'pending',
+                  'bg-red-100 text-red-700': sub.status === 'inactive'
+                }" class="text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ml-2">
+                  {{ sub.status === 'active' ? 'Ativa' :
+                  sub.status === 'pending' ? 'Pendente' :
+                  'Inativa' }}
+                </span>
+              </div>
+
+              <!-- Detalhes -->
+              <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                <div>
+                  <div class="font-medium mb-1">Início</div>
+                  <div>{{ formatDate(sub.createdAt, 'short') }}</div>
+                </div>
+                <div>
+                  <div class="font-medium mb-1">Próxima</div>
+                  <div>{{ formatDate(sub.nextCharge, 'short') }}</div>
+                </div>
+                <div class="col-span-2">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">Pagamento</span>
+                    <span [ngClass]="{
+                      'text-green-600': sub.paid,
+                      'text-yellow-600': !sub.paid
+                    }" class="font-medium">
+                      {{ sub.paid ? '✓ Confirmado' : '⏳ Pendente' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botões de Ação -->
+              <div class="flex space-x-2 pt-2 border-t border-gray-100">
+                <button *ngIf="sub.status === 'active'" (click)="cancelSubscription(sub)"
+                  class="flex-1 bg-betha-pink hover:bg-pink-600 text-white py-1.5 px-3 rounded text-xs font-medium transition duration-200 flex items-center justify-center">
+                  <i class="fas fa-times mr-1 text-xs"></i>
+                  Cancelar
+                </button>
+                <!-- No template, substitua o botão de "Detalhes" no card de assinaturas: -->
+                <button (click)="viewSubscriptionDetails(sub); $event.stopPropagation()"
+                  class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 rounded text-xs font-medium transition duration-200 flex items-center justify-center">
+                  <i class="fas fa-info-circle mr-1 text-xs"></i>
+                  Detalhes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solicitações Pendentes -->
+        <div class="bg-gray-50 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+              <i class="fas fa-clock text-betha-yellow mr-2 text-sm"></i>
+              Solicitações Pendentes
+            </h3>
+            <span *ngIf="pendingRequests.length > 0"
+              class="text-xs px-3 py-1 rounded-full bg-yellow-50 text-yellow-700 font-medium">
+              {{ pendingRequests.length }} pendente{{ pendingRequests.length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+
+          <div *ngIf="pendingRequests.length === 0" class="text-center py-6">
+            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-inbox text-gray-400"></i>
+            </div>
+            <p class="text-gray-500 text-sm mb-2">Nenhuma solicitação pendente</p>
+            <p class="text-gray-400 text-xs">Todas as solicitações foram processadas</p>
+          </div>
+
+          <div class="space-y-3 max-h-96 overflow-y-auto pr-2" *ngIf="pendingRequests.length > 0">
+            <div *ngFor="let request of pendingRequests" [ngClass]="{
+                'border-l-4 border-yellow-400': request.status === 'pending',
+                'border-l-4 border-green-400': request.status === 'approved',
+                'border-l-4 border-red-400': request.status === 'rejected'
+              }" class="bg-white rounded-lg p-4 border border-gray-200">
+
+              <!-- Cabeçalho da Solicitação -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center mb-1">
+                    <h4 class="font-medium text-gray-900 text-sm truncate">{{ getServiceName(request.serviceId) }}</h4>
+                    <i [ngClass]="{
+                      'fas fa-clock text-yellow-500 ml-2': request.status === 'pending',
+                      'fas fa-check-circle text-green-500 ml-2': request.status === 'approved',
+                      'fas fa-times-circle text-red-500 ml-2': request.status === 'rejected'
+                    }" class="text-xs"></i>
+                  </div>
+                  <p class="text-xs text-gray-500">Solicitado em {{ formatDate(request.createdAt, 'short') }}</p>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="mb-3">
+                <span [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': request.status === 'pending',
+                  'bg-green-100 text-green-700': request.status === 'approved',
+                  'bg-red-100 text-red-700': request.status === 'rejected'
+                }" class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ request.status === 'pending' ? 'Em análise' :
+                  request.status === 'approved' ? 'Aprovado' :
+                  'Rejeitado' }}
+                </span>
+              </div>
+
+              <!-- Informações -->
+              <div class="space-y-2 text-xs text-gray-600 mb-3">
+                <div *ngIf="request.updatedAt && request.updatedAt !== request.createdAt"
+                  class="flex justify-between items-center">
+                  <span class="font-medium">Atualizado:</span>
+                  <span>{{ formatDate(request.updatedAt, 'short') }}</span>
+                </div>
+
+                <div *ngIf="request.notes" class="pt-2 border-t border-gray-100">
+                  <div class="font-medium mb-1">Observações:</div>
+                  <p class="text-gray-500 text-xs line-clamp-2">{{ request.notes }}</p>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-gray-100 space-y-2">
+                <button (click)="cancelRequest(request)"
+                  class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 rounded text-xs font-medium transition duration-200 flex items-center justify-center">
+                  <i class="fas fa-trash-alt mr-1 text-xs"></i>
+                  Cancelar Solicitação
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

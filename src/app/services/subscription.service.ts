@@ -2,41 +2,32 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service';
 import { AuthService } from './auth.service';
 import { Observable, map, from, of } from 'rxjs';
+import { Service } from '../models/service.model';
 
 export interface RequestSub {
-  id: string;                    
-  userId: string;                
-  serviceId: string;             
-  createdAt: string;             
-  status: 'pending' | 'approved' | 'rejected'; 
-  updatedAt?: string;            
-  notes?: string;                
-  subscriptionId?: string;       
+  id: string;
+  userId: string;
+  serviceId: string;
+  createdAt: string;
+  status: 'pending' | 'approved' | 'rejected';
+  updatedAt?: string;
+  notes?: string;
+  subscriptionId?: string;
 }
 
 export interface Subscription {
-  id: string;                    
-  userId: string;                
-  serviceId: string;             
-  createdAt: string;             
-  paid: boolean;                 
-  nextCharge: string;            
-  status: 'active' | 'inactive' | 'pending'; 
-  updatedAt?: string;            
-  approvedBy?: string;           
-  approvedAt?: string;           
-  requestId?: string;            
-}
-
-export interface Service {
   id: string;
-  name: string;
-  price: number;
-  description: string;
+  userId: string;
+  serviceId: string;
   createdAt: string;
-  updatedAt: string;
+  paid: boolean;
+  nextCharge: string;
+  status: 'active' | 'inactive' | 'pending';
+  updatedAt?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  requestId?: string;
 }
-
 
 @Injectable({
   providedIn: 'root'
@@ -49,34 +40,34 @@ export class SubscriptionService {
   ) { }
 
   getAllServices(): Observable<Service[]> {
-  return this.db.readInRealTime('services', '').pipe(
-    map((services: any) => {
-      console.log('Raw data from Firebase:', services);
-      
-      if (!services) {
-        console.log('No services found');
-        return [];
-      }
+    return this.db.readInRealTime('services', '').pipe(
+      map((services: any) => {
+        console.log('Raw data from Firebase:', services);
 
-      // Converter objeto para array e adicionar ID
-      const servicesArray = Object.keys(services).map(id => ({
-        id,
-        ...services[id]
-      }));
-      
-      console.log('Processed services:', servicesArray);
-      
-      // REMOVE O FILTRO ou ajusta:
-      // Opção 1: Sem filtro (retorna tudo)
-      return servicesArray;
-      
-      // Opção 2: Filtro corrigido (se não tiver active, considera ativo)
-      // return servicesArray.filter(service =>
-      //   service.active === undefined || service.active === true
-      // );
-    })
-  );
-}
+        if (!services) {
+          console.log('No services found');
+          return [];
+        }
+
+        // Converter objeto para array e adicionar ID
+        const servicesArray = Object.keys(services).map(id => ({
+          id,
+          ...services[id]
+        }));
+
+        console.log('Processed services:', servicesArray);
+
+        // REMOVE O FILTRO ou ajusta:
+        // Opção 1: Sem filtro (retorna tudo)
+        return servicesArray;
+
+        // Opção 2: Filtro corrigido (se não tiver active, considera ativo)
+        // return servicesArray.filter(service =>
+        //   service.active === undefined || service.active === true
+        // );
+      })
+    );
+  }
 
   /**
    * Buscar serviços por termo de busca
@@ -194,6 +185,25 @@ export class SubscriptionService {
     };
 
     await this.db.updateData(`subscriptions/${userId}/requests`, requestId, updateData);
+  }
+
+  async cancelSubscription(subId: string): Promise<void> {
+    const userId = this.auth.getUserId();
+    if (!userId) throw new Error('Usuário não autenticado');
+
+    const request = await from(this.db.readData(`subscriptions/${userId}/subs`, subId)).toPromise();
+    if (!request) throw new Error('Solicitação não encontrada');
+    if (request.status !== 'active') {
+      throw new Error('Só é possível cancelar assinaturas ativas');
+    }
+
+    const updateData = {
+      ...request,
+      status: 'canceled' as const,
+      updatedAt: new Date().toISOString()
+    };
+
+    await this.db.updateData(`subscriptions/${userId}/subs`, subId, updateData);
   }
 
   getUserSubscriptions(): Observable<Subscription[]> {

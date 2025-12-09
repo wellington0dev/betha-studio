@@ -1,7 +1,7 @@
 // src/app/components/projects/projects.component.ts
 import { Component } from '@angular/core';
-import { Project } from '../../models/project.model';
-import { PROJECTS } from '../../constants/projects';
+import { Project } from '../../../models/project.model';
+import { PROJECTS } from '../../../constants/projects';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 

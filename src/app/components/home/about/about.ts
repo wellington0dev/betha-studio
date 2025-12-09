@@ -1,8 +1,8 @@
 // src/app/components/about/about.component.ts
 import { Component } from '@angular/core';
 
-import { TeamMember } from '../../models/team-member.model';
-import { TEAM_MEMBERS } from '../../constants/team-members';
+import { TeamMember } from '../../../models/team-member.model';
+import { TEAM_MEMBERS } from '../../../constants/team-members';
 import { CommonModule } from '@angular/common';
 
 @Component({

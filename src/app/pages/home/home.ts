@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Navbar } from '../../components/navbar/navbar';
-import { Hero } from '../../components/hero/hero';
-import { Services } from '../../components/services/services';
-import { About } from '../../components/about/about';
-import { Projects } from '../../components/projects/projects';
-import { Contact } from '../../components/contact/contact';
+import { Hero } from '../../components/home/hero/hero';
+import { Services } from '../../components/home/services/services';
+import { About } from '../../components/home/about/about';
+import { Projects } from '../../components/home/projects/projects';
+import { Contact } from '../../components/home/contact/contact';
 import { Footer } from '../../components/footer/footer';
 
 @Component({

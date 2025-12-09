@@ -1,0 +1,151 @@
+<!-- suport-chat.html -->
+<div class="support-chat-page">
+  <!-- Header fixo -->
+  <header class="support-header">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo e título -->
+        <div class="flex items-center space-x-4">
+          <button (click)="goBack()" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span class="ml-2 hidden sm:inline">Voltar</span>
+          </button>
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-r from-betha-pink to-betha-green rounded-full flex items-center justify-center">
+              <i class="fas fa-headset text-white"></i>
+            </div>
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold text-gray-900">Suporte Betha Studio</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área principal -->
+  <main class="support-main">
+    <!-- Container de mensagens -->
+    <div class="messages-container" #messageContainer>
+      <!-- Loading -->
+      <div *ngIf="isLoading() && messages().length === 0" class="loading-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Carregando conversa...</p>
+      </div>
+
+      <!-- Mensagem de boas-vindas -->
+      <div *ngIf="!isLoading() && messages().length === 0" class="welcome-container">
+        <div class="welcome-content">
+          <div class="welcome-icon">
+            <i class="fas fa-comments text-4xl text-betha-green"></i>
+          </div>
+          <h2 class="welcome-title">Inicie uma conversa</h2>
+          <p class="welcome-text">
+            Nossa equipe de suporte está pronta para ajudar.<br>
+            Envie sua primeira mensagem abaixo!
+          </p>
+          <div class="welcome-tips">
+            <div class="tip">
+              <i class="fas fa-clock text-betha-pink"></i>
+              <span>Resposta rápida</span>
+            </div>
+            <div class="tip">
+              <i class="fas fa-shield-alt text-betha-green"></i>
+              <span>Conversa segura</span>
+            </div>
+            <div class="tip">
+              <i class="fas fa-history text-betha-yellow"></i>
+              <span>Histórico salvo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensagens -->
+      <div *ngFor="let message of messages()" [class]="message.sender === 'user' 
+             ? 'message-wrapper user-message' 
+             : 'message-wrapper support-message'">
+
+        <!-- Avatar do suporte -->
+        <div class="message-avatar" *ngIf="message.sender === 'admin'">
+          <div class="avatar support-avatar">
+            <i class="fas fa-headset"></i>
+          </div>
+        </div>
+
+        <!-- Conteúdo da mensagem -->
+        <div class="message-content">
+          <!-- Informações do remetente -->
+          <div class="message-info" *ngIf="message.sender === 'admin'">
+            <span class="sender-name">Suporte Betha</span>
+          </div>
+
+          <!-- Bolha da mensagem -->
+          <div [class]="message.sender === 'user'
+            ? 'message-bubble user-bubble'
+            : 'message-bubble support-bubble'">
+
+            <p class="message-text">{{ message.text }}</p>
+
+            <!-- Rodapé da mensagem -->
+            <div class="message-footer">
+              <span class="message-time">
+                {{ formatDateTime(message.timestamp) }}
+              </span>
+
+              <!-- Status da mensagem (apenas para usuário) -->
+              <span *ngIf="message.sender === 'user'" class="message-status">
+                <i *ngIf="message.read" class="fas fa-check-double text-betha-green"></i>
+                <i *ngIf="!message.read" class="fas fa-check text-gray-400"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar do usuário -->
+        <div class="message-avatar" *ngIf="message.sender === 'user'">
+          <div class="avatar user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de input -->
+    <div class="input-section">
+      <div class="input-container">
+        <div class="input-wrapper">
+          <!-- Área de input principal -->
+          <div class="input-group">
+            <!-- Botão anexar (opcional) -->
+            <button class="input-action-btn" title="Anexar arquivo">
+              <i class="fas fa-paperclip"></i>
+            </button>
+
+            <!-- Campo de texto -->
+            <textarea [value]="newMessage()" (input)="newMessage.set($any($event.target).value)"
+              (keydown.enter)="onKeyPress($event)" placeholder="Digite sua mensagem..." [disabled]="isLoading()"
+              rows="1" class="message-input" #messageInput (input)="autoResizeTextarea()">
+</textarea>
+
+            <!-- Botão enviar -->
+            <button (click)="sendMessage()" [disabled]="!newMessage().trim() || isLoading()" class="send-btn"
+              title="Enviar mensagem">
+              <i *ngIf="!isLoading()" class="fas fa-paper-plane"></i>
+              <i *ngIf="isLoading()" class="fas fa-spinner fa-spin"></i>
+            </button>
+          </div>
+
+          <!-- Dicas de uso -->
+          <div class="input-tips">
+            <span class="tip-text">
+              <i class="fas fa-info-circle mr-1"></i>
+              Pressione Enter para enviar • Shift+Enter para nova linha
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

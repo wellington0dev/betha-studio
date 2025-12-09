@@ -1,8 +1,21 @@
 <div class="app-container">
-  <app-navbar></app-navbar>
-  <main>
-    <app-client-subscriptions></app-client-subscriptions>
-    <app-suport-chat></app-suport-chat>
+  <app-navbar (linkSelected)="setActiveComponent($event)"></app-navbar>
+
+  <main class="client-main">
+
+    <div class="client-content-container">
+      <!-- Componente ativo -->
+      <div class="client-content">
+        <ng-container [ngSwitch]="activeComponent">
+          <app-client-dashboard *ngSwitchCase="'dashboard'"></app-client-dashboard>
+          <app-client-subscriptions *ngSwitchCase="'subscriptions'"></app-client-subscriptions>
+          <app-suport-chat (linkSelected)="setActiveComponent($event)" *ngSwitchCase="'chat'"></app-suport-chat>
+        </ng-container>
+      </div>
+    </div>
   </main>
+
+  @if(activeComponent !== 'chat'){
   <app-footer></app-footer>
+  }
 </div>

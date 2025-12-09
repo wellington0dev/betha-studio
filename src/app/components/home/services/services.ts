@@ -1,7 +1,7 @@
 // src/app/components/services/services.component.ts
 import { Component } from '@angular/core';
-import { Service } from '../../models/service.model';
-import { SERVICES } from '../../constants/services';
+import { Service } from '../../../models/service.model';
+import { SERVICES } from '../../../constants/services';
 import { CommonModule } from '@angular/common';
 
 @Component({

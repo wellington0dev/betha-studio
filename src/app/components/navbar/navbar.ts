@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
@@ -7,19 +7,22 @@ import { AuthService } from '../../services/auth.service';
 interface NavLink {
   name: string;
   href: string;
-  type: 'internal' | 'external' | 'section' | 'route';
+  type: 'internal' | 'external' | 'section' | 'route' | 'component';
+  component?: 'dashboard' | 'subscriptions' | 'chat';
 }
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss']
 })
 export class Navbar implements OnInit {
+  @Output() linkSelected = new EventEmitter<'dashboard' | 'subscriptions' | 'chat'>();
+  
   isOpen: boolean = false;
   scrolled: boolean = false;
-
   currentLinks: NavLink[] = [];
 
   navHomeLinks: NavLink[] = [
@@ -32,9 +35,9 @@ export class Navbar implements OnInit {
   ];
 
   navClientLinks: NavLink[] = [
-    { name: 'Dashboard', href: 'dashboard', type: 'section' },
-    { name: 'Assinaturas', href: 'subscriptions', type: 'section' },
-    { name: 'Suporte', href: 'chat', type: 'section' },
+   /*  { name: 'Dashboard', href: 'dashboard', type: 'component', component: 'dashboard' }, */
+    { name: 'Assinaturas', href: 'subscriptions', type: 'component', component: 'subscriptions' },
+    { name: 'Suporte', href: 'chat', type: 'component', component: 'chat' },
     { name: 'Voltar ao Início', href: '/', type: 'route' },
   ];
 
@@ -57,10 +60,9 @@ export class Navbar implements OnInit {
 
     if (url === '/' || url === '/home') {
       this.currentLinks = this.navHomeLinks;
-    } else if (url.startsWith('/customer')) {
+    } else if (url.startsWith('/client') || url.startsWith('/customer')) {
       this.currentLinks = this.navClientLinks;
     } else {
-      // Links padrão para outras páginas
       this.currentLinks = [
         { name: 'Voltar ao Início', href: '/', type: 'route' }
       ];
@@ -80,10 +82,15 @@ export class Navbar implements OnInit {
     this.isOpen = false;
   }
 
-  handleNavigation(href: string, type: string): void {
+  handleNavigation(href: string, type: string, component?: 'dashboard' | 'subscriptions' | 'chat'): void {
     this.closeMenu();
 
     switch (type) {
+      case 'component':
+        if (component) {
+          this.linkSelected.emit(component);
+        }
+        break;
       case 'section':
         this.scrollToSection(href);
         break;
@@ -105,22 +112,10 @@ export class Navbar implements OnInit {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      console.warn(`Seção não encontrada: ${sectionId}`);
-      // Fallback: rolar para o topo
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  scrollTo(sectionId: string): void {
-    this.closeMenu();
-    const element = document.getElementById(sectionId.replace('#', ''));
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  private navigateToRoute(route: string): void {
+  navigateToRoute(route: string): void {
     if (route.startsWith('/')) {
       this.router.navigate([route]);
     } else {
