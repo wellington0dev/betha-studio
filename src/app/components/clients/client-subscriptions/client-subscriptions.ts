@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SubscriptionService, Subscription, RequestSub } from '../../../services/subscription.service';
 import { Subscription as RxSubscription } from 'rxjs';
 import { Service } from '../../../models/service.model';
-import { UiService } from '../../../services/ui.service'; // Importar UiService
+import { UiService } from '../../../services/ui.service';
 
 @Component({
   selector: 'app-client-subscriptions',
@@ -37,28 +37,25 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
   private loadData() {
     this.isLoading = true;
 
-    // Limpa subscription anterior se existir
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
 
-    // Carrega serviços
     const servicesSub = this.subscriptionService.getAllServices()
       .subscribe({
         next: (services) => {
           this.services = services;
           console.log('Services:', services);
           this.isLoading = false;
-          this.cdr.detectChanges(); // Força detecção de mudanças
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Erro ao carregar serviços:', err);
           this.isLoading = false;
-          this.cdr.detectChanges(); // Força detecção de mudanças
+          this.cdr.detectChanges();
         }
       });
 
-    // Carrega assinaturas
     const subscriptionsSub = this.subscriptionService.getActiveSubscriptions()
       .subscribe({
         next: (subscriptions) => {
@@ -69,7 +66,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
         }
       });
 
-    // Carrega solicitações
     const requestsSub = this.subscriptionService.getPendingRequests()
       .subscribe({
         next: (requests) => {
@@ -80,7 +76,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
         }
       });
 
-    // Cria uma subscription combinada
     this.dataSubscription = new RxSubscription();
     this.dataSubscription.add(servicesSub);
     this.dataSubscription.add(subscriptionsSub);
@@ -98,21 +93,18 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
 
       if (!confirmed) return;
 
-      // Mostrar loading
       const hideLoading = this.uiService.showLoading('Processando sua solicitação...');
 
       try {
         await this.subscriptionService.requestSubscription(serviceId, serviceName);
 
-        hideLoading(); // Remove loading
+        hideLoading();
 
-        // Mostrar sucesso
         await this.uiService.showAlert(
           'Solicitação enviada com sucesso! Você receberá uma confirmação em breve.',
           'Sucesso'
         );
 
-        // Recarregar dados
         await this.loadData();
 
       } catch (error) {
@@ -212,6 +204,11 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     return service ? service.name : `Serviço ${serviceId}`;
   }
 
+  getServicePixLink(serviceId: string): string {
+    const service = this.services.find(s => s.id === serviceId);
+    return service?.linkPix || '';
+  }
+
   formatDate(dateString: string, format: 'full' | 'short' = 'full'): string {
     try {
       const date = new Date(dateString);
@@ -238,7 +235,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     }
   }
 
-  // Método para solicitar detalhes da assinatura
   async viewSubscriptionDetails(sub: Subscription) {
     const service = this.services.find(s => s.id === sub.serviceId);
 
@@ -256,10 +252,8 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
   }
 
   async viewServiceDetails(service: Service) {
-    // HTML do modal
     const modalHtml = `
       <div class="service-details-modal">
-        <!-- Conteúdo do Serviço -->
         <div class="service-content">
           <div class="service-header">
             <h3 class="service-name">${this.escapeHtml(service.name)}</h3>
@@ -274,7 +268,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
             <p>${this.escapeHtml(service.description)}</p>
           </div>
 
-          <!-- Informações Técnicas -->
           <div class="service-tech">
             <h4 class="section-title">Informações Técnicas</h4>
             <div class="tech-grid">
@@ -294,7 +287,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
           </div>
         </div>
 
-        <!-- Botões de Ação -->
         <div class="service-actions">
           <button class="btn btn-secondary close-btn">
             <i class="fas fa-times mr-2"></i>
@@ -308,7 +300,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
       </div>
     `;
 
-    // Criar overlay e modal
     const overlay = document.createElement('div');
     overlay.className = 'service-modal-overlay';
 
@@ -319,10 +310,8 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
-    // Inicializar carrossel
     this.initCarousel(modal);
 
-    // Função para fechar o modal
     const closeModal = () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
@@ -332,7 +321,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
       }, 300);
     };
 
-    // Event Listeners
     const closeBtn = modal.querySelector('.close-btn');
     closeBtn?.addEventListener('click', closeModal);
 
@@ -348,7 +336,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
       }
     });
 
-    // Fechar com ESC
     const escHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -358,9 +345,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     document.addEventListener('keydown', escHandler);
   }
 
-  /**
-   * Inicializa o carrossel de fotos
-   */
   private initCarousel(modal: HTMLElement) {
     const slides = modal.querySelectorAll('.carousel-slide');
     const indicators = modal.querySelectorAll('.indicator');
@@ -370,17 +354,14 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     let currentSlide = 0;
 
     const showSlide = (index: number) => {
-      // Remove classe active de todos os slides
       slides.forEach(slide => slide.classList.remove('active'));
       indicators.forEach(indicator => indicator.classList.remove('active'));
 
-      // Adiciona classe active ao slide atual
       slides[index].classList.add('active');
       indicators[index].classList.add('active');
       currentSlide = index;
     };
 
-    // Event Listeners para os controles
     prevBtn?.addEventListener('click', () => {
       const newIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
       showSlide(newIndex);
@@ -391,29 +372,24 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
       showSlide(newIndex);
     });
 
-    // Event Listeners para os indicadores
     indicators.forEach((indicator, index) => {
       indicator.addEventListener('click', () => {
         showSlide(index);
       });
     });
 
-    // Auto-rotate (opcional)
     const autoRotate = () => {
       const nextIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
       showSlide(nextIndex);
     };
 
-    // Iniciar auto-rotate a cada 5 segundos
     let rotateInterval = setInterval(autoRotate, 5000);
 
-    // Parar auto-rotate quando o modal for fechado
     modal.addEventListener('mouseenter', () => clearInterval(rotateInterval));
     modal.addEventListener('mouseleave', () => {
       rotateInterval = setInterval(autoRotate, 5000);
     });
 
-    // Limpar intervalo quando o modal for destruído
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.removedNodes.length > 0) {
@@ -426,9 +402,6 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
     observer.observe(modal.parentNode || document.body, { childList: true });
   }
 
-  /**
-   * Escapa HTML para prevenir XSS
-   */
   private escapeHtml(text: string): string {
     const div = document.createElement('div');
     div.textContent = text;
@@ -436,15 +409,41 @@ export class ClientSubscriptions implements OnInit, OnDestroy {
   }
 
   copyPix(link: string) {
-    if (!link) return;
+    if (!link) {
+      this.uiService.showAlert("Link PIX não disponível para este serviço.");
+      return;
+    }
 
     navigator.clipboard.writeText(link)
       .then(() => {
-        this.uiService.showAlert("Link PIX copiado!");
+        this.uiService.showAlert("Link PIX copiado para a área de transferência!");
       })
       .catch(() => {
-        this.uiService.showAlert("Erro ao copiar. Tenta de novo!")
+        this.uiService.showAlert("Erro ao copiar link PIX. Tente novamente!");
       });
   }
 
+  copyPixForSubscription(sub: Subscription) {
+    const pixLink = this.getServicePixLink(sub.serviceId);
+    if (!pixLink) {
+      this.uiService.showAlert("Link PIX não encontrado para esta assinatura.");
+      return;
+    }
+    
+    // Adicionar informações da assinatura ao link PIX (opcional)
+    const enhancedLink = `${pixLink}&subscriptionId=${sub.id}`;
+    this.copyPix(enhancedLink);
+  }
+
+  copyPixForRequest(request: RequestSub) {
+    const pixLink = this.getServicePixLink(request.serviceId);
+    if (!pixLink) {
+      this.uiService.showAlert("Link PIX não encontrado para esta solicitação.");
+      return;
+    }
+    
+    // Adicionar informações da solicitação ao link PIX (opcional)
+    const enhancedLink = `${pixLink}&requestId=${request.id}`;
+    this.copyPix(enhancedLink);
+  }
 }
