@@ -1,4 +1,3 @@
-// src/app/components/contact/contact.component.scss
 .contact-section {
   padding: 6rem 0;
   background: var(--betha-bg);
@@ -35,6 +34,7 @@
 
   // Info Side Styles
   .info-side {
+    max-width: 100%;
     background: var(--betha-dark);
     color: white;
     padding: 2.5rem;

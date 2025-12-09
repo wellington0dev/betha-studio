@@ -1,10 +1,10 @@
 <!-- src/app/components/contact/contact.component.html -->
 <section id="contact" class="contact-section">
   <div class="container">
-    
+
     <div class="contact-card">
       <div class="grid-container">
-        
+
         <!-- Info Side -->
         <div class="info-side">
           <div class="info-content">
@@ -38,38 +38,21 @@
 
         <!-- Form Side -->
         <div class="form-side">
-          <!-- Removido #contactForm="ngForm" já que não estamos usando no método -->
-          <form class="contact-form">
+          <form class="contact-form" #contactForm="ngForm" (ngSubmit)="sendMessage(contactForm, $event)">
             <div class="form-grid">
               <div class="form-group">
                 <label class="form-label">Nome</label>
-                <input 
-                  type="text" 
-                  class="form-input"
-                  placeholder="Seu nome"
-                  name="name"
-                  ngModel
-                  required>
+                <input type="text" class="form-input" placeholder="Seu nome" name="name" ngModel required>
               </div>
               <div class="form-group">
                 <label class="form-label">Email</label>
-                <input 
-                  type="email" 
-                  class="form-input"
-                  placeholder="seu@email.com"
-                  name="email"
-                  ngModel
-                  required>
+                <input type="email" class="form-input" placeholder="seu@email.com" name="email" ngModel required>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="form-label">Assunto</label>
-              <select 
-                class="form-select"
-                name="subject"
-                ngModel
-                required>
+              <select class="form-select" name="subject" ngModel required>
                 <option value="site-budget">Orçamento de Site</option>
                 <option value="ui-ux">Design UI/UX</option>
                 <option value="app-dev">Desenvolvimento de App</option>
@@ -79,13 +62,8 @@
 
             <div class="form-group">
               <label class="form-label">Mensagem</label>
-              <textarea 
-                rows="4" 
-                class="form-textarea"
-                placeholder="Conte mais sobre seu projeto..."
-                name="message"
-                ngModel
-                required></textarea>
+              <textarea rows="4" class="form-textarea" placeholder="Conte mais sobre seu projeto..." name="message"
+                ngModel required></textarea>
             </div>
 
             <button type="submit" class="submit-button">

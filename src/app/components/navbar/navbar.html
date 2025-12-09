@@ -2,7 +2,6 @@
   <div class="container">
     <div class="navbar-content">
 
-      <!-- Logo -->
       <div class="logo">
         <a (click)="navigateToRoute('/')" class="logo-link" style="cursor: pointer;">
           <span class="logo-part pink">Be</span>
@@ -11,18 +10,14 @@
         </a>
       </div>
 
-      <!-- Desktop Menu -->
       <ul class="desktop-menu">
         <li *ngFor="let link of currentLinks">
-          <a 
-            (click)="handleNavigation(link.href, link.type, link.component)"
-            class="nav-link"
-            [class.active]="link.type === 'component'">
+          <a (click)="handleNavigation(link.href, link.type, link.component)" class="nav-link"
+            [class.active]="link.type === 'component'" [class.client-button]="link.name === 'Área do Cliente'">
             {{ link.name }}
           </a>
         </li>
 
-        <!-- Botão Sair (apenas se estiver logado) -->
         <li *ngIf="isUserLoggedIn()">
           <a (click)="logout()" class="nav-link logout-link">
             <i class="fas fa-sign-out-alt mr-2"></i>
@@ -31,7 +26,6 @@
         </li>
       </ul>
 
-      <!-- Mobile Menu Button -->
       <div class="mobile-menu-button">
         <button (click)="toggleMenu()" class="menu-button">
           <i [class]="isOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
@@ -40,17 +34,13 @@
     </div>
   </div>
 
-  <!-- Mobile Menu -->
   <div *ngIf="isOpen" class="mobile-menu">
     <div class="mobile-menu-content">
-      <a 
-        *ngFor="let link of currentLinks"
-        (click)="handleNavigation(link.href, link.type, link.component)"
-        class="mobile-nav-link">
+      <a *ngFor="let link of currentLinks" (click)="handleNavigation(link.href, link.type, link.component)"
+        class="mobile-nav-link" [class.client-button]="link.name === 'Área do Cliente'">
         {{ link.name }}
       </a>
 
-      <!-- Botão Sair no Mobile (apenas se estiver logado) -->
       <a *ngIf="isUserLoggedIn()" (click)="logout()" class="mobile-nav-link logout-link">
         <i class="fas fa-sign-out-alt mr-2"></i>
         Sair
