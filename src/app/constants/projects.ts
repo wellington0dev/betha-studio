@@ -4,7 +4,7 @@ import { Project } from "../models/project.model";
 export const PROJECTS: Project[] = [
   {
     id: 'gespro',
-    title: 'GesPro - Agendamento',
+    title: 'GesPro - Agenda',
     description: 'Sistema completo de agendamento online para profissionais autônomos e pequenas empresas',
     category: 'Web App',
     tags: [
@@ -34,7 +34,7 @@ export const PROJECTS: Project[] = [
     description: 'Assistente de IA especializada para blogueiras e criadoras de conteúdo',
     category: 'Content AI',
     tags: [
-      'Otimização SEO',
+      //'Otimização SEO',
       'Reescrita de Textos',
       'Análise de Títulos',
       'Storytelling'
